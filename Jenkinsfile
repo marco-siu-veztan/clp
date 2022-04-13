@@ -36,5 +36,10 @@ pipeline {
                 }
             }
         }
+        stage('Deploy') {
+            steps {
+                sh "kubectl apply -f nodejs-deploy.yaml"
+            }
+        }
     }
 }
