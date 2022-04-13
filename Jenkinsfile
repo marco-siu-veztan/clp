@@ -19,9 +19,10 @@ pipeline {
         }
         stage('Build image') {
             steps {
-                // sh "docker build -t ${registry}:${BUILD_NUMBER} ."
-                script {
-                    dockerImage = docker.build registry+":$BUILD_NUMBER"
+                dir ('device-api'){
+                    script {
+                        dockerImage = docker.build registry+":$BUILD_NUMBER"
+                    }
                 }
             }
         }
