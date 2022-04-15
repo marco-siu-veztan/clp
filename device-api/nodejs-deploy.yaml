@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-deployment
+  name: node
   labels:
-          app: nodejs
+          app: node
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: nodejs
-  replicas: 1
+      app: node
   template:
     metadata:
       labels:
-        app: nodejs
+        app: node
     spec:
       containers:
-      - name: nodejs
-        image: marcosiu/clp:24
+      - name: node
+        image: marcosiu/clp:lts
         ports:
         - containerPort: 3000
         env:
@@ -25,29 +25,29 @@ spec:
           - name: MYSQL_USER
             value: userapi
           - name: MYSQL_PASSWORD
-            value: userapi
-            # valueFrom:
-            #   secretKeyRef:
-            #     name: secrets
-            #     key: rootPassword
+            # value: userapi
+            valueFrom:
+              secretKeyRef:
+                name: secrets
+                key: password
           - name: MYSQL_DATABASE
-            value: userapi
-            # valueFrom:
-            #   secretKeyRef:
-            #     name: secrets
-            #     key: database
+            # value: userapi echo 'userapi' | base64
+            valueFrom:
+              secretKeyRef:
+                name: secrets
+                key: database
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nodejs-service
+  name: node
   labels:
-    run: nodejs
+    run: node
 spec:
   ports:
   - port: 80
     protocol: TCP
     targetPort: 3000
   selector:
-    app: nodejs
+    app: node
   type: NodePort
